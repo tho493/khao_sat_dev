@@ -695,7 +695,6 @@
         loadProgress();
         checkAllConditions();
         updateProgress();
-        warningSafariIos();
         $('.question-card[data-conditional-parent-id]').hide();
         
         surveyForm.on('input change', function() {
