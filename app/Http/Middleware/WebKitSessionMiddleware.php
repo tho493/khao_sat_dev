@@ -71,10 +71,7 @@ class WebKitSessionMiddleware
         }
 
         // Đặc biệt cho WebKit: Đảm bảo XSRF-TOKEN cookie được set đúng
-        $response = response();
-        if ($response) {
-            $response->cookie('XSRF-TOKEN', $request->session()->token(), 0, '/', null, false, false);
-        }
+        // Cookie sẽ được set trong WebKitCookieMiddleware
 
         // Log session health
         Log::info('WebKit Session Health Check', [
