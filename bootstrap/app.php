@@ -17,6 +17,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\CheckSurveyStatus::class,
             \App\Http\Middleware\WebKitSessionMiddleware::class,
+            \App\Http\Middleware\WebKitCookieMiddleware::class,
             \App\Http\Middleware\SessionDebugMiddleware::class,
         ]);
 

@@ -81,8 +81,14 @@ class SafariCsrfMiddleware extends Middleware
                 return;
             }
 
+            // Kiểm tra XSRF-TOKEN cookie cho WebKit
+            $xsrfCookie = $request->cookie('XSRF-TOKEN');
+            if ($xsrfCookie && hash_equals($token, $xsrfCookie)) {
+                return;
+            }
+
             // Nếu không có token hợp lệ, tạo token mới và gửi về client
-            if (!$headerToken && !$inputToken && !$xsrfToken && Config::get('subdomain.safari.regenerate_token', true)) {
+            if (!$headerToken && !$inputToken && !$xsrfToken && !$xsrfCookie && Config::get('subdomain.safari.regenerate_token', true)) {
                 $request->session()->regenerateToken();
 
                 if (Config::get('subdomain.safari.log_attempts', true)) {

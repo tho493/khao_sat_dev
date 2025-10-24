@@ -478,12 +478,36 @@ if (isset($dotKhaoSat) && $dotKhaoSat) {
         // Xử lý lỗi 419 cho Apple WebKit
         $(document).ajaxError(function(event, xhr, settings) {
             if (xhr.status === 419) {
+                console.log('419 Error detected for WebKit:', {
+                    url: settings.url,
+                    method: settings.type,
+                    headers: settings.headers,
+                    userAgent: navigator.userAgent
+                });
+                
                 // Làm mới CSRF token và thử lại
                 if (window.confirm('Phiên làm việc đã hết hạn. Bạn có muốn tải lại trang để tiếp tục?')) {
                     window.location.reload();
                 }
             }
         });
+        
+        // Đặc biệt cho WebKit: Đảm bảo headers được gửi đúng
+        if (navigator.userAgent.indexOf('AppleWebKit') !== -1) {
+            console.log('WebKit detected, applying special handling');
+            
+            // Override tất cả AJAX calls để đảm bảo headers
+            const originalAjax = $.ajax;
+            $.ajax = function(options) {
+                if (options.type === 'POST' || options.type === 'PUT' || options.type === 'PATCH' || options.type === 'DELETE') {
+                    options.headers = options.headers || {};
+                    options.headers['X-CSRF-TOKEN'] = $('meta[name="csrf-token"]').attr('content');
+                    options.headers['X-XSRF-TOKEN'] = $('meta[name="csrf-token"]').attr('content');
+                    options.headers['X-Requested-With'] = 'XMLHttpRequest';
+                }
+                return originalAjax.call(this, options);
+            };
+        }
     </script>
 
     @stack('scripts')

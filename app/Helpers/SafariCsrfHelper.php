@@ -131,11 +131,31 @@ class SafariCsrfHelper
                         beforeSend: function(xhr, settings) {
                             if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'PATCH' || settings.type === 'DELETE') {
                                 xhr.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
+                                xhr.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
                                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                             }
                         }
                     });
                 }
+                
+                // Đặc biệt cho WebKit: Override XMLHttpRequest
+                const originalXHR = window.XMLHttpRequest;
+                window.XMLHttpRequest = function() {
+                    const xhr = new originalXHR();
+                    const originalOpen = xhr.open;
+                    const originalSend = xhr.send;
+                    
+                    xhr.open = function(method, url, async, user, password) {
+                        originalOpen.call(this, method, url, async, user, password);
+                        if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+                            this.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
+                            this.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
+                            this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                        }
+                    };
+                    
+                    return xhr;
+                };
             }
         }
         </script>";

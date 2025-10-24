@@ -70,6 +70,12 @@ class WebKitSessionMiddleware
             $request->session()->put('_webkit_last_activity', now()->timestamp);
         }
 
+        // Đặc biệt cho WebKit: Đảm bảo XSRF-TOKEN cookie được set đúng
+        $response = response();
+        if ($response) {
+            $response->cookie('XSRF-TOKEN', $request->session()->token(), 0, '/', null, false, false);
+        }
+
         // Log session health
         Log::info('WebKit Session Health Check', [
             'user_agent' => $request->header('User-Agent'),
