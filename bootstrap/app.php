@@ -18,9 +18,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CheckSurveyStatus::class,
         ]);
         $middleware->validateCsrfTokens(except: [
-            'khaosatdev.tho493.id.vn/*',
-            'khaosatdev.tho493.id.vn/admin/*',
-            'khaosatdev.tho493.id.vn/admin',
+            'https://khaosatdev.tho493.id.vn/*',
+            '*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
