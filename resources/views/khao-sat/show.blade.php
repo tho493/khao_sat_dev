@@ -678,9 +678,6 @@
             confirmButtonText: '<i class="bi bi-browser-chrome"></i> Chuyển trình duyệt',
             denyButtonText: '<i class="bi bi-x-lg"></i> Đóng',
         });
-        if (result.isConfirmed) {
-            window.location.href = 'googlechrome://' + window.location.href;
-        }
 
         /**
          * Helper: Xóa câu trả lời của một card câu hỏi.
