@@ -16,6 +16,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\CheckSurveyStatus::class,
+            \App\Http\Middleware\WebKitSessionMiddleware::class,
+            \App\Http\Middleware\SessionDebugMiddleware::class,
         ]);
 
         $middleware->web(replace: [

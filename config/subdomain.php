@@ -13,17 +13,17 @@ return [
     'domain' => env('SUBDOMAIN_DOMAIN', '.yourdomain.com'),
 
     'session' => [
-        'domain' => env('SESSION_DOMAIN', '.yourdomain.com'),
-        'same_site' => env('SESSION_SAME_SITE', 'none'),
-        'secure' => env('SESSION_SECURE_COOKIE', true),
+        'domain' => env('SESSION_DOMAIN', null), // Bỏ domain để tránh vấn đề WebKit
+        'same_site' => env('SESSION_SAME_SITE', 'lax'), // Thay đổi từ 'none' thành 'lax'
+        'secure' => env('SESSION_SECURE_COOKIE', false), // Tạm thời tắt cho WebKit
         'http_only' => env('SESSION_HTTP_ONLY', true),
         'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
     ],
 
     'csrf' => [
-        'domain' => env('CSRF_COOKIE_DOMAIN', '.yourdomain.com'),
-        'same_site' => env('CSRF_COOKIE_SAME_SITE', 'none'),
-        'secure' => env('CSRF_COOKIE_SECURE', true),
+        'domain' => env('CSRF_COOKIE_DOMAIN', null), // Bỏ domain để tránh vấn đề WebKit
+        'same_site' => env('CSRF_COOKIE_SAME_SITE', 'lax'), // Thay đổi từ 'none' thành 'lax'
+        'secure' => env('CSRF_COOKIE_SECURE', false), // Tạm thời tắt cho WebKit
     ],
 
     'safari' => [

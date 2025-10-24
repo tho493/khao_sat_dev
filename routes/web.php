@@ -25,3 +25,29 @@ Route::prefix('')->name('khao-sat.')->group(function () {
     Route::get('/thank-you', [KhaoSatController::class, 'thanks'])->name('thanks');
     Route::get('/{dotKhaoSat}', [KhaoSatController::class, 'show'])->name('show');
 });
+
+// Debug route for WebKit session testing
+Route::get('/debug/session', function () {
+    $userAgent = request()->header('User-Agent', '');
+    $isWebKit = strpos($userAgent, 'AppleWebKit') !== false;
+    $isSafari = strpos($userAgent, 'Safari') !== false && strpos($userAgent, 'Chrome') === false;
+
+    return response()->json([
+        'user_agent' => $userAgent,
+        'is_webkit' => $isWebKit,
+        'is_safari' => $isSafari,
+        'session_id' => session()->getId(),
+        'csrf_token' => session()->token(),
+        'session_started' => session()->isStarted(),
+        'session_data' => session()->all(),
+        'cookies' => request()->cookies->all(),
+        'session_config' => [
+            'driver' => config('session.driver'),
+            'lifetime' => config('session.lifetime'),
+            'same_site' => config('session.same_site'),
+            'secure' => config('session.secure'),
+            'domain' => config('session.domain'),
+        ],
+        'timestamp' => now()->toISOString(),
+    ]);
+});
