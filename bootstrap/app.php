@@ -16,16 +16,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\CheckSurveyStatus::class,
-            \App\Http\Middleware\WebKitSessionMiddleware::class,
-            \App\Http\Middleware\WebKitCookieMiddleware::class,
-            \App\Http\Middleware\SessionDebugMiddleware::class,
         ]);
-
-        $middleware->web(replace: [
-            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class => \App\Http\Middleware\SafariCsrfMiddleware::class,
+        $middleware->validateCsrfTokens(except: [
+            'khaosatdev.tho493.id.vn/*',
+            'khaosatdev.tho493.id.vn/admin/*',
+            'khaosatdev.tho493.id.vn/admin',
         ]);
     })
-
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Throwable $e, $request) {
             if ($request->is('api/*')) {
