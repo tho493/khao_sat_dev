@@ -39,7 +39,15 @@ class LoginController extends Controller
                 }
 
                 Auth::login($user);
-                $request->session()->regenerate();
+
+                $ua = $request->header('User-Agent', '');
+                $isWebkit = strpos($ua, 'AppleWebKit') !== false;
+                $isSafari = strpos($ua, 'Safari') !== false && strpos($ua, 'Chrome') === false;
+
+                if (!($isWebkit || $isSafari)) {
+                    $request->session()->regenerate();
+                }
+
                 return redirect()->intended('admin');
             }
 

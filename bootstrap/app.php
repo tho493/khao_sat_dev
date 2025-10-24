@@ -19,7 +19,6 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             'https://khaosatdev.tho493.id.vn/*',
-            '*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

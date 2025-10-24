@@ -670,19 +670,16 @@
             }
         }
 
-
-        function warningSafariIos() {
-            Swal.fire({
-                title: 'Thông báo!',
-                text: "Nếu bạn đang dùng Safari iOS vui lòng chuyển sang trình duyệt khác để tiếp tục làm bài!!",
-                icon: 'warning',
-                showDenyButton: true,
-                confirmButtonText: '<i class="bi bi-browser-chrome"></i> Chuyển trình duyệt',
-                denyButtonText: '<i class="bi bi-x-lg"></i> Đóng',
-            });
-            if (result.isConfirmed) {
-                window.location.href = 'googlechrome://' + window.location.href;
-            }
+        Swal.fire({
+            title: 'Thông báo!',
+            text: "Nếu bạn đang dùng Safari iOS vui lòng chuyển sang trình duyệt khác để tiếp tục làm bài!!",
+            icon: 'warning',
+            showDenyButton: true,
+            confirmButtonText: '<i class="bi bi-browser-chrome"></i> Chuyển trình duyệt',
+            denyButtonText: '<i class="bi bi-x-lg"></i> Đóng',
+        });
+        if (result.isConfirmed) {
+            window.location.href = 'googlechrome://' + window.location.href;
         }
 
         /**
