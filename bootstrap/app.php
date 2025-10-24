@@ -16,6 +16,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\CheckSurveyStatus::class,
+            \Illuminate\Session\Middleware\StartSession::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'https://khaosatdev.tho493.id.vn/*',
