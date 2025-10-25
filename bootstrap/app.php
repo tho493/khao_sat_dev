@@ -15,6 +15,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
+            \App\Http\Middleware\SafariSessionFixMiddleware::class,
+            \App\Http\Middleware\SafariSessionMiddleware::class,
+            \App\Http\Middleware\WebKitSessionMiddleware::class,
+            \App\Http\Middleware\WebKitCookieMiddleware::class,
+            \App\Http\Middleware\SafariCsrfMiddleware::class,
             \App\Http\Middleware\CheckSurveyStatus::class,
             \Illuminate\Session\Middleware\StartSession::class,
         ]);

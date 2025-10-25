@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {!! \App\Helpers\SafariSessionHelper::generateSafariMetaTags() !!}
     <title> @yield('title', "Trang chủ") - Hệ thống khảo sát trực tuyến </title>
     <meta name="description"
         content="Hệ thống khảo sát trực tuyến - Nền tảng khảo sát hiện đại, bảo mật và dễ sử dụng." />
@@ -509,6 +510,9 @@ if (isset($dotKhaoSat) && $dotKhaoSat) {
             };
         }
     </script>
+
+    {!! \App\Helpers\SafariSessionHelper::generateSafariSessionScript() !!}
+    {!! \App\Helpers\SafariCsrfHelper::generateSafariCsrfScript() !!}
 
     @stack('scripts')
 
