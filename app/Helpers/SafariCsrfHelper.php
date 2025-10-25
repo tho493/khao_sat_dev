@@ -96,68 +96,97 @@ class SafariCsrfHelper
     {
         return "
         <script>
-        // Safari/WebKit CSRF Fix
-        if ((navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1) || 
-            navigator.userAgent.indexOf('AppleWebKit') !== -1) {
-            // Đảm bảo CSRF token được gửi trong mọi request
-            const token = document.querySelector('meta[name=\"csrf-token\"]');
-            if (token) {
-                // Thêm token vào tất cả form
-                document.addEventListener('DOMContentLoaded', function() {
-                    const forms = document.querySelectorAll('form');
-                    forms.forEach(function(form) {
-                        if (!form.querySelector('input[name=\"_token\"]')) {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = '_token';
-                            input.value = token.getAttribute('content');
-                            form.appendChild(input);
-                        }
-                    });
-                });
+        // Safari/WebKit CSRF Fix - Enhanced for Safari session issues
+        (function() {
+            const isSafari = (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1);
+            const isWebKit = navigator.userAgent.indexOf('AppleWebKit') !== -1;
+            
+            if (isSafari || isWebKit) {
+                console.log('Safari/WebKit detected - applying session fixes');
                 
-                // Thêm token vào AJAX requests
-                const originalFetch = window.fetch;
-                window.fetch = function(url, options = {}) {
-                    options.headers = options.headers || {};
-                    options.headers['X-CSRF-TOKEN'] = token.getAttribute('content');
-                    options.headers['X-Requested-With'] = 'XMLHttpRequest';
-                    return originalFetch(url, options);
-                };
-                
-                // Cải thiện jQuery AJAX cho WebKit
-                if (window.jQuery) {
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'PATCH' || settings.type === 'DELETE') {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
-                                xhr.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
-                                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                            }
-                        }
-                    });
-                }
-                
-                // Đặc biệt cho WebKit: Override XMLHttpRequest
-                const originalXHR = window.XMLHttpRequest;
-                window.XMLHttpRequest = function() {
-                    const xhr = new originalXHR();
-                    const originalOpen = xhr.open;
-                    const originalSend = xhr.send;
+                // Đảm bảo CSRF token được gửi trong mọi request
+                const token = document.querySelector('meta[name=\"csrf-token\"]');
+                if (token) {
+                    console.log('CSRF token found:', token.getAttribute('content'));
                     
-                    xhr.open = function(method, url, async, user, password) {
-                        originalOpen.call(this, method, url, async, user, password);
-                        if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
-                            this.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
-                            this.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
-                            this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                        }
+                    // Thêm token vào tất cả form
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const forms = document.querySelectorAll('form');
+                        forms.forEach(function(form) {
+                            if (!form.querySelector('input[name=\"_token\"]')) {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = '_token';
+                                input.value = token.getAttribute('content');
+                                form.appendChild(input);
+                                console.log('Added CSRF token to form');
+                            }
+                        });
+                    });
+                    
+                    // Enhanced fetch for Safari
+                    const originalFetch = window.fetch;
+                    window.fetch = function(url, options = {}) {
+                        options.headers = options.headers || {};
+                        options.headers['X-CSRF-TOKEN'] = token.getAttribute('content');
+                        options.headers['X-XSRF-TOKEN'] = token.getAttribute('content');
+                        options.headers['X-Requested-With'] = 'XMLHttpRequest';
+                        options.credentials = 'same-origin'; // Important for Safari
+                        return originalFetch(url, options);
                     };
                     
-                    return xhr;
-                };
+                    // Enhanced jQuery AJAX for Safari
+                    if (window.jQuery) {
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'PATCH' || settings.type === 'DELETE') {
+                                    xhr.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
+                                    xhr.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
+                                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Enhanced XMLHttpRequest for Safari
+                    const originalXHR = window.XMLHttpRequest;
+                    window.XMLHttpRequest = function() {
+                        const xhr = new originalXHR();
+                        const originalOpen = xhr.open;
+                        const originalSend = xhr.send;
+                        
+                        xhr.open = function(method, url, async, user, password) {
+                            originalOpen.call(this, method, url, async, user, password);
+                            if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+                                this.setRequestHeader('X-CSRF-TOKEN', token.getAttribute('content'));
+                                this.setRequestHeader('X-XSRF-TOKEN', token.getAttribute('content'));
+                                this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                            }
+                        };
+                        
+                        return xhr;
+                    };
+                    
+                    // Safari session keep-alive
+                    setInterval(function() {
+                        if (document.visibilityState === 'visible') {
+                            fetch(window.location.href, {
+                                method: 'HEAD',
+                                credentials: 'same-origin',
+                                headers: {
+                                    'X-CSRF-TOKEN': token.getAttribute('content'),
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            }).catch(function(error) {
+                                console.log('Safari session keep-alive failed:', error);
+                            });
+                        }
+                    }, 30000); // Every 30 seconds
+                } else {
+                    console.warn('CSRF token not found - Safari session may not work properly');
+                }
             }
-        }
+        })();
         </script>";
     }
 }

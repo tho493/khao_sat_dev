@@ -32,7 +32,7 @@ return [
     |
     */
 
-    'lifetime' => (int) env('SESSION_LIFETIME', 480), // Tăng lên 8 giờ cho WebKit
+    'lifetime' => (int) env('SESSION_LIFETIME', 120), // 2 giờ cho Safari compatibility
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 
@@ -169,7 +169,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false), // Tạm thời tắt cho WebKit testing
+    'secure' => env('SESSION_SECURE_COOKIE', false), // Safari cần false cho HTTP
 
     /*
     |--------------------------------------------------------------------------
@@ -199,7 +199,7 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'), // Thay đổi từ 'none' thành 'lax' cho WebKit
+    'same_site' => env('SESSION_SAME_SITE', 'lax'), // Safari yêu cầu 'lax' hoặc 'strict'
 
     /*
     |--------------------------------------------------------------------------

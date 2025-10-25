@@ -13,17 +13,18 @@ return [
     'domain' => env('SUBDOMAIN_DOMAIN', '.yourdomain.com'),
 
     'session' => [
-        'domain' => env('SESSION_DOMAIN', null), // Bỏ domain để tránh vấn đề WebKit
-        'same_site' => env('SESSION_SAME_SITE', 'lax'), // Thay đổi từ 'none' thành 'lax'
-        'secure' => env('SESSION_SECURE_COOKIE', false), // Tạm thời tắt cho WebKit
+        'domain' => env('SESSION_DOMAIN', null), // Bỏ domain để tránh vấn đề Safari
+        'same_site' => env('SESSION_SAME_SITE', 'lax'), // Safari yêu cầu 'lax'
+        'secure' => env('SESSION_SECURE_COOKIE', false), // False cho HTTP
         'http_only' => env('SESSION_HTTP_ONLY', true),
         'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+        'lifetime' => env('SESSION_LIFETIME', 120), // 2 giờ cho Safari
     ],
 
     'csrf' => [
-        'domain' => env('CSRF_COOKIE_DOMAIN', null), // Bỏ domain để tránh vấn đề WebKit
-        'same_site' => env('CSRF_COOKIE_SAME_SITE', 'lax'), // Thay đổi từ 'none' thành 'lax'
-        'secure' => env('CSRF_COOKIE_SECURE', false), // Tạm thời tắt cho WebKit
+        'domain' => env('CSRF_COOKIE_DOMAIN', null), // Bỏ domain để tránh vấn đề Safari
+        'same_site' => env('CSRF_COOKIE_SAME_SITE', 'lax'), // Safari yêu cầu 'lax'
+        'secure' => env('CSRF_COOKIE_SECURE', false), // False cho HTTP
     ],
 
     'safari' => [
