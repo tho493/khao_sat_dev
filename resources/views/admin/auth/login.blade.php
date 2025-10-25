@@ -210,6 +210,7 @@
     }
     checkStorageAccess().then(ok => {
         if (!ok) {
+            console.log('Storage access denied');
             {!! \App\Helpers\SafariSessionHelper::generateSafariSessionScript() !!}
         } else {
             console.log('Storage access granted');
