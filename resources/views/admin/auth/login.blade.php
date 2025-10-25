@@ -190,33 +190,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    async function checkStorageAccess() {
-        return new Promise((resolve, reject) => {
-            if ('hasStorageAccess' in document) {
-                document.hasStorageAccess().then(ok => {
-                    if (!ok) {
-                        document.requestStorageAccess().catch(e => {
-                            reject(e);
-                        });
-                    }
-                    resolve(ok);
-                }).catch(e => {
-                    reject(e);
-                });
-            } else {
-                resolve(true);
-            }
-        });
+    if ('hasStorageAccess' in document) {
+        const ok = await document.hasStorageAccess();
+        if (!ok) { try { await document.requestStorageAccess(); } catch(e) {} }
     }
-    checkStorageAccess().then(ok => {
-        if (!ok) {
-            console.log('Storage access denied');
-            {!! \App\Helpers\SafariSessionHelper::generateSafariSessionScript() !!}
-        } else {
-            console.log('Storage access granted');
-        }
-    });
-    // Toggle password visibility
+    // Toggle password visibility   
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('matkhau');
         const icon = this.querySelector('i');
