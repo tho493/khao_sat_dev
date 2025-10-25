@@ -190,6 +190,31 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    async function checkStorageAccess() {
+        return new Promise((resolve, reject) => {
+            if ('hasStorageAccess' in document) {
+                document.hasStorageAccess().then(ok => {
+                    if (!ok) {
+                        document.requestStorageAccess().catch(e => {
+                            reject(e);
+                        });
+                    }
+                    resolve(ok);
+                }).catch(e => {
+                    reject(e);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    }
+    checkStorageAccess().then(ok => {
+        if (!ok) {
+            {!! \App\Helpers\SafariSessionHelper::generateSafariSessionScript() !!}
+        } else {
+            console.log('Storage access granted');
+        }
+    });
     // Toggle password visibility
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('matkhau');
